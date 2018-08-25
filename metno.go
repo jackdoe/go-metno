@@ -1,8 +1,10 @@
 package metno
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -126,6 +128,7 @@ func LocationForecast(client *http.Client, lat, lng float64, msl int) (*MetNoWea
 		return nil, err
 	}
 	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Accept-Encoding", "gzip")
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -134,7 +137,16 @@ func LocationForecast(client *http.Client, lat, lng float64, msl int) (*MetNoWea
 
 	defer res.Body.Close()
 
-	buf, err := ioutil.ReadAll(res.Body)
+	var reader io.ReadCloser
+	switch res.Header.Get("Content-Encoding") {
+	case "gzip":
+		reader, err = gzip.NewReader(res.Body)
+		defer reader.Close()
+	default:
+		reader = res.Body
+	}
+
+	buf, err := ioutil.ReadAll(reader)
 	out := MetNoWeatherOutput{}
 	err = json.Unmarshal(buf, &out)
 	if err != nil {
