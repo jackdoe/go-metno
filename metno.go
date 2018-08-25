@@ -14,9 +14,9 @@ import (
 // awesome software, and also to the api.met.no guys who provide their
 // data for free and have awesome service
 type MetNoWeatherOutput struct {
-	Product struct {
+	Product *struct {
 		Class string `json:"class"`
-		Time  []struct {
+		Time  []*struct {
 			To       time.Time `json:"to"`
 			Datatype string    `json:"datatype"`
 			From     time.Time `json:"from"`
