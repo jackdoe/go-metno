@@ -150,6 +150,7 @@ func SimpleClient(timeoutSeconds time.Duration) *http.Client {
 		Dial: (&net.Dialer{
 			Timeout: timeoutSeconds * time.Second,
 		}).Dial,
+		DisableCompression:  false, // default is false, but make it explicit that gzip is handled from http.Transport
 		TLSHandshakeTimeout: timeoutSeconds * time.Second,
 	}
 	var netClient = &http.Client{
