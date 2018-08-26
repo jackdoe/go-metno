@@ -29,10 +29,18 @@ type MetNoWeatherOutput struct {
 					ID      string  `json:"id"`
 					Percent float64 `json:"percent,string"`
 				} `json:"fog"`
+				TemperatureProbability *struct {
+					Unit  string  `json:"unit"`
+					Value float64 `json:"value,string"`
+				} `json:"temperatureProbability"`
+				WindProbability *struct {
+					Unit  string  `json:"unit"`
+					Value float64 `json:"value,string"`
+				} `json:"windProbability"`
 				Pressure *struct {
-					ID    string `json:"id"`
-					Unit  string `json:"unit"`
-					Value string `json:"value"`
+					ID    string  `json:"id"`
+					Unit  string  `json:"unit"`
+					Value float64 `json:"value,string"`
 				} `json:"pressure"`
 				Cloudiness *struct {
 					Percent float64 `json:"percent,string"`
