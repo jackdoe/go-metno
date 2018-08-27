@@ -164,9 +164,12 @@ func SimpleClient(timeoutSeconds time.Duration) *http.Client {
 		TLSHandshakeTimeout: timeoutSeconds * time.Second,
 	}
 
-	proxyUrl, err := url.Parse(os.Getenv("HTTPS_PROXY"))
-	if err == nil {
-		netTransport.Proxy = http.ProxyURL(proxyUrl)
+	proxyString := os.Getenv("HTTPS_PROXY")
+	if proxyString != "" {
+		proxyUrl, err := url.Parse(proxyString)
+		if err == nil {
+			netTransport.Proxy = http.ProxyURL(proxyUrl)
+		}
 	}
 	var netClient = &http.Client{
 		Timeout:   time.Second * timeoutSeconds,
