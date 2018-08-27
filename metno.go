@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"net/url"
+	"os"
 	"time"
 )
 
@@ -134,7 +136,7 @@ func LocationForecast(client *http.Client, lat, lng float64, msl int) (*MetNoWea
 		return nil, err
 	}
 	req.Header.Add("Accept", "application/json")
-
+	req.Header.Set("User-Agent", "go-metno client (https://github.com/jackdoe/go-metno)")
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -160,6 +162,11 @@ func SimpleClient(timeoutSeconds time.Duration) *http.Client {
 		}).Dial,
 		DisableCompression:  false, // default is false, but make it explicit that gzip is handled from http.Transport
 		TLSHandshakeTimeout: timeoutSeconds * time.Second,
+	}
+
+	proxyUrl, err := url.Parse(os.Getenv("HTTPS_PROXY"))
+	if err == nil {
+		netTransport.Proxy = http.ProxyURL(proxyUrl)
 	}
 	var netClient = &http.Client{
 		Timeout:   time.Second * timeoutSeconds,
